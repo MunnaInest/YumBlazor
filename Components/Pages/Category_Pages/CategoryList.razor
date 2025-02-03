@@ -1,5 +1,12 @@
 ﻿@page "/category"
 @inject ICategoryRepository _categoryRepository
+@inject IJSRuntime _IJSRuntime
+
+<BsModal OnModalConfirmation="ConfirmDelete_Click"
+    ButtonBootstrapStyle="btn-danger"
+    ButtonText="Delete"
+    Title="Are you sure you want to delete this Category?"
+></BsModal>
 
 @if(IsProcessing)
 {
@@ -39,7 +46,7 @@ else
                                 <td>@obj.Name</td>
                                 <td>
                                     <a href="@($"/category/update/{@obj.Id}")" class="btn btn-sm btn-secondary" style="width:100px;"><i class="bi bi-pencil"></i> Edit </a>
-                                    <a href="/category/delete/@obj.Id" class="btn btn-sm btn-danger" style="width:100px;"><i class="bi bi-trash"></i> Delete</a>
+                                    <button @onclick="()=>HandleDelete(obj.Id)" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</button>
                                 </td>
                             </tr>
                         }
@@ -54,6 +61,8 @@ else
     public bool IsProcessing {get; set; } = true;
 
     private IEnumerable<Category> Categories { get; set; } = new List<Category>();
+
+    private int DeleteCategoryId { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,5 +82,32 @@ else
     private async Task LoadCategories()
     {
         Categories = await _categoryRepository.GetAllAsync();
+    }
+
+    private void HandleDelete(int id)
+    {
+        DeleteCategoryId = id;
+        _IJSRuntime.InvokeVoidAsync("ShowConfirmationModal");
+    }
+
+    private async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        IsProcessing = true;
+        await _IJSRuntime.InvokeVoidAsync("HideConfirmationModal");
+        if(isConfirmed)
+        {
+            var result = await _categoryRepository.DeleteCategoryAsync(DeleteCategoryId);
+            if(result)
+            {
+                await _IJSRuntime.ToastrSuccess("Category Deleted Successfully");
+            }
+            else
+            {
+                await _IJSRuntime.ToastrError("Category Deletion Failed");            
+            }
+            await LoadCategories();
+        }
+        IsProcessing = false;
+        DeleteCategoryId = 0;
     }
 }
