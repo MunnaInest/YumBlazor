@@ -10,12 +10,12 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>Register</PageTitle>
 
-<h1>Log in</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
+<div class="mt-5" style="height:100%">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <div class="card-body">
+            <h5 class="card-title text-center display-6">Sign In</h5>
             <StatusMessage Message="@errorMessage" />
             <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
                 <DataAnnotationsValidator />
@@ -41,7 +41,7 @@
                 <div>
                     <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                 </div>
-                <div>
+                <div class="row">
                     <p>
                         <a href="Account/ForgotPassword">Forgot your password?</a>
                     </p>
@@ -53,16 +53,14 @@
                     </p>
                 </div>
             </EditForm>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
+            <br />
             <ExternalLoginPicker />
-        </section>
+            <hr>
+           
+        </div>
     </div>
 </div>
+
 
 @code {
     private string? errorMessage;

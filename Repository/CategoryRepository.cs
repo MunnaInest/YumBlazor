@@ -1,13 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YumBlazor.Data;
+using YumBlazor.Repository.IRepository;
 
-namespace YumBlazor.Repository.IRepository
+namespace YumBlazor.Repository
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public CategoryRepository(ApplicationDbContext db) {
+        public CategoryRepository(ApplicationDbContext db)
+        {
             _db = db;
         }
         public async Task<Category> CreateCategoryAsync(Category category)
@@ -21,7 +23,8 @@ namespace YumBlazor.Repository.IRepository
         {
             int count = 0;
             var category = _db.Category.Find(id);
-            if (category != null) {
+            if (category != null)
+            {
                 _db.Category.Remove(category);
                 count = await _db.SaveChangesAsync();
             }
@@ -30,7 +33,7 @@ namespace YumBlazor.Repository.IRepository
 
         public async Task<Category> GetAsync(int categoryId)
         {
-            int count = 0;  
+            int count = 0;
             var category = await _db.Category.FindAsync(categoryId);
             if (category != null)
             {
@@ -51,7 +54,7 @@ namespace YumBlazor.Repository.IRepository
             if (obj is not null)
             {
                 obj.Name = category.Name;
-                _db.Category.Update(obj);   
+                _db.Category.Update(obj);
                 count = await _db.SaveChangesAsync();
             }
             return obj;
