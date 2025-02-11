@@ -1,5 +1,4 @@
-﻿@using YumBlazor.Utility;
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 
@@ -41,7 +40,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _navBarVisible = await ShowNavBar();
+        if (firstRender)
+        {
+            _navBarVisible = await ShowNavBar();
+            StateHasChanged();
+        }
     }
 
     private async Task<bool> ShowNavBar()
