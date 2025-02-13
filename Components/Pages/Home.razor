@@ -5,6 +5,7 @@
 @inject IProductRepository _productRepository;
 @inject ICategoryRepository _categoryRepository;
 @inject IShoppingCartRepository _shoppingCartRepository;
+@inject SharedStateService _sharedStateService;
 
 <PageTitle>Home</PageTitle>
 
@@ -15,8 +16,8 @@
 
 @if(IsProcessing)
 {
-   <div class="position-absolute w-100 h-100 d-flex flex-column align-items-center bg-white justify-content-center">
-       <img src="/images/loading.gif" />
+    <div class="position-absolute w-100 h-100 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading.gif" />
     </div>
 }
 else
@@ -47,10 +48,10 @@ else
             <div class="card">
                 <div class="mt-3 mb-2 row">
                     <div class="col-6 px-3">
-                         @if(!string.IsNullOrEmpty(prod.SpecialTag))
-                         {
+                        @if(!string.IsNullOrEmpty(prod.SpecialTag))
+                        {
                             <i class="bi bi-star btn btn-outline-success disabled">@prod.SpecialTag</i>
-                         }
+                        }
                     </div>
                     <div class="col-6 text-end text-danger px-3 h3">
                         @prod.Price.ToString("C", CultureInfo.GetCultureInfo("en-us"))
@@ -150,7 +151,9 @@ else
         }
         else
         {
-            var result = await _shoppingCartRepository.UpdateCartAsync(user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value, product.Id, 1);
+            var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+            var result = await _shoppingCartRepository.UpdateCartAsync(userId, product.Id, 1);
+            _sharedStateService.TotalCartCount = await _shoppingCartRepository.GetTotalCartCountAsync(userId);
             if(result)
             {
                 _jsRuntime?.ToastrSuccess("Product added to cart successfully");
