@@ -34,8 +34,11 @@ else
                         <ValidationMessage For="@(() => Product.Name)" />
                     </div>
                     <div class="form-floating py-3 col-12">
-                        <InputText @bind-Value="Product.Description" class="form-control" id="Decription" placeholder="Description" />
                         <label for="Description">Description</label>
+
+                        <RadzenHtmlEditor @bind-Value=@Product.Description style="height: 450px;">
+
+                        </RadzenHtmlEditor>
                         <ValidationMessage For="@(() => Product.Description)" />
                     </div>
                     <div class="form-floating py-3 col-12">
@@ -150,7 +153,7 @@ else
     {
         IsProcessing = true;
         var file = e.File;
-        FileInfo fileInfo = new(file.Name);
+        System.IO.FileInfo fileInfo = new(file.Name);
         var newFileName = $"{Guid.NewGuid()}{fileInfo.Extension}";
         if (!Directory.Exists(_dirctoryPath))
         {

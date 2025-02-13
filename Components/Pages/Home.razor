@@ -21,6 +21,14 @@
 }
 else
 {
+    <RadzenButton Click="@ButtonClicked" Text="Hi"></RadzenButton>
+    @code {
+    void ButtonClicked()
+    {
+        // Handle the Click event of RadzenButton
+    }
+}
+
     <ul class="nav nav-underline justify-content-center mb-2">
         <li class="nav-item">
             <span class="nav-link @GetActiveTabClass(0)" href="#" @onclick="()=>FilterProducts(0)" style="cursor:pointer">All</span>

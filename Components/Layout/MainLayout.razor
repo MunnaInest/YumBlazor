@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject AuthenticationStateProvider _authenticationStateProvider
 
 
 <div class="page">
@@ -33,25 +33,23 @@
 @code
 {
     private bool _navBarVisible;
-    protected override Task OnInitializedAsync()
+
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        _navBarVisible = await ShowNavBar();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            _navBarVisible = await ShowNavBar();
-            StateHasChanged();
-        }
+        _navBarVisible = await ShowNavBar();
     }
 
     private async Task<bool> ShowNavBar()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
         if(!authenticated)
         {
             return true;

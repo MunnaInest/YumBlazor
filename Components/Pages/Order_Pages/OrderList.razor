@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject IJSRuntime _IJSRuntime
 @inject IOrderRepository _orderRepository
+@inject NavigationManager _navigationManager
 @attribute [Authorize]
 
 
@@ -29,7 +30,27 @@ else
             </div>
             @if (OrderHeaders.Any())
             {
-                <table class="table table-bordered table-striped">
+
+                <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                                Data="@OrderHeaders" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single">
+                    <Columns>
+                        <RadzenDataGridColumn Property="Id" Filterable="false" Title="ID" Frozen="true" Width="80px" TextAlign="TextAlign.Center" />
+                        <RadzenDataGridColumn Property="Name" Title="Name" Frozen="true" Width="120px" />
+                        <RadzenDataGridColumn Property="PhoneNumber" Title="Phone Number" Width="120px" />
+                        <RadzenDataGridColumn Property="Email" Title="Email" Width="200px" />
+                        <RadzenDataGridColumn Property="OrderTotal" FormatString="{0:C}" Title="Order Total" Width="120px" />
+                        @* <RadzenDataGridColumn Property="OrderDate" Title="Birth Date" FormatString="{0:d}" Width="160px" /> *@
+                        <RadzenDataGridColumn Property="Status" Title="Status"  Width="160px" />
+                        <RadzenDataGridColumn Title="Action" Frozen="true" Sortable="false" Filterable="false" Width="80px" TextAlign="TextAlign.Center">
+                            <Template Context="orderHeader">
+                                <RadzenButton Shade="Shade.Lighter" Text="Details" ButtonStyle="ButtonStyle.Primary"
+                                Click="@(()=>_navigationManager.NavigateTo($"order/details/{orderHeader.Id}"))" ></RadzenButton>
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+
+                @* <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -60,7 +81,7 @@ else
                             </tr>
                         }
                     </tbody>
-                </table>
+                </table> *@
             }
         </div>
     </div>
